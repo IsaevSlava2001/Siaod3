@@ -100,9 +100,9 @@ int check(char name[])
 char *output_str(char name[])
 {
 	char buff[400];
-	char buff_char[200];
+	char *buff_char = new char[200] {'\0'};
 	ifstream fin(name); 
-	fin.getline(buff, 200);
+	fin.getline(buff, 400);
 	fin.close();
 	int i = 0;
 	int k = 0;
@@ -114,6 +114,7 @@ char *output_str(char name[])
 		i = i + 2;
 		k++;
 	}
+
 	return buff_char;
 }
 
@@ -296,6 +297,7 @@ int main()
 						}
 
 					}
+					nums[100] = '\0';
 					break;
 				default:
 					cout << "Ошибка" << endl;
@@ -303,14 +305,15 @@ int main()
 					main();
 					break;
 				}
-				cout << "Файл заполнится следующими числами" << endl;
+				cout <<endl<< "Файл заполнится следующими числами" << endl;
 				for (int i = 0; i < SIZE; i++)
 				{
 					cout << nums[i];
 				}
+				cout << endl;
 				system("pause");
 				fill_file(name, nums);
-				cout << "Файл успешно заполнен" << endl;
+				cout << endl<<"Файл успешно заполнен" << endl;
 				system("pause");
 				main();
 			}
@@ -344,13 +347,13 @@ int main()
 			}
 			else
 			{
-				char *nums_return = output_str(name);
-				cout << sizeof(nums_return);
-				//int i = 0;
-				for(int i=0;i<200;i++)
+				char* nums_return = new char[200];
+				nums_return = output_str(name);
+				for (int i = 0; i < 200; i++)
 				{
 					cout << nums_return[i];
 				}
+				cout << endl;
 				system("pause");
 				main();
 			}

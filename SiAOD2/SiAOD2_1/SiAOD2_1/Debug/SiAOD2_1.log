@@ -1,0 +1,5 @@
+﻿  Source.cpp
+c:\users\1655299\documents\visual studio 2015\projects\siaod2_1\siaod2_1\source.cpp(53): warning C4715: getdigit: значение возвращается не при всех путях выполнения
+c:\users\1655299\documents\visual studio 2015\projects\siaod2_1\siaod2_1\source.cpp(117): warning C4172: возвращение адреса локальной или временной переменной : buff_char
+  SiAOD2_1.vcxproj -> C:\Users\1655299\Documents\Visual Studio 2015\Projects\SiAOD2_1\Debug\SiAOD2_1.exe
+  SiAOD2_1.vcxproj -> C:\Users\1655299\Documents\Visual Studio 2015\Projects\SiAOD2_1\Debug\SiAOD2_1.pdb (Partial PDB)

@@ -1,2 +1,9 @@
-﻿  SiAOD2_1.vcxproj -> C:\Users\1655299\Desktop\ГИТХАБ\Siaod\SiAOD2\SiAOD2_1\Debug\SiAOD2_1.exe
-  SiAOD2_1.vcxproj -> C:\Users\1655299\Desktop\ГИТХАБ\Siaod\SiAOD2\SiAOD2_1\Debug\SiAOD2_1.pdb (Partial PDB)
+﻿  Source.cpp
+c:\users\1655299\desktop\гитхаб\siaod3\siaod2\siaod2_1\siaod2_1\text_files.h(216): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+c:\users\1655299\desktop\гитхаб\siaod3\siaod2\siaod2_1\siaod2_1\text_files.h(302): warning C4552: +: оператор не имеет результата; требуется оператор с побочным действием
+c:\users\1655299\desktop\гитхаб\siaod3\siaod2\siaod2_1\siaod2_1\text_files.h(304): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+c:\users\1655299\desktop\гитхаб\siaod3\siaod2\siaod2_1\siaod2_1\text_files.h(317): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+c:\users\1655299\desktop\гитхаб\siaod3\siaod2\siaod2_1\siaod2_1\text_files.h(282): warning C4101: num: неиспользованная локальная переменная
+c:\users\1655299\desktop\гитхаб\siaod3\siaod2\siaod2_1\siaod2_1\text_files.h(54): warning C4715: getdigit: значение возвращается не при всех путях выполнения
+  SiAOD2_1.vcxproj -> C:\Users\1655299\Desktop\ГИТХАБ\Siaod3\SiAOD2\SiAOD2_1\Debug\SiAOD2_1.exe
+  SiAOD2_1.vcxproj -> C:\Users\1655299\Desktop\ГИТХАБ\Siaod3\SiAOD2\SiAOD2_1\Debug\SiAOD2_1.pdb (Partial PDB)

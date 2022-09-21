@@ -63,22 +63,45 @@ void create(char name[])
 /*заполняет файл числами и переводит в кодировку ASCII.
 Аргументы:
 0-имя файла,
-1-массив чисел char*/
-void fill_file(char name[], char nums[])
+1-массив чисел char
+3-число заполнения файла. Если файл уже заполнялся, 1, если файл еще пустой, 0*/
+void fill_file(char name[], char nums[], int fill)
 {
-	int i = 0;
-	ofstream file;
-	file.open(name);
-	if (file.is_open())
+	if (fill == 0)
 	{
-		while (nums[i] != '\0')
+		int i = 0;
+		ofstream file;
+		file.open(name);
+		if (file.is_open())
 		{
-			int x = nums[i];
-			file << x;
-			i++;
+			while (nums[i] != '\0')
+			{
+				int x = nums[i];
+				file << x;
+				i++;
+			}
 		}
+		file.close();
 	}
-	file.close();
+	else if (fill==1)
+	{
+		int i = 0;
+		ofstream file;
+		file.open(name, ios::app);
+		if (file.is_open())
+		{
+			char n = '\n';
+			int x = n;
+			file << x;
+			while (nums[i] != '\0')
+			{
+				int x = nums[i];
+				file << x;
+				i++;
+			}
+		}
+		file.close();
+	}
 }
 /*проверяет, существует ли файл. Если да, возвращает 1, иначе 0.
 Аргументы:
@@ -99,10 +122,10 @@ int check(char name[])
 0-имя файла*/
 char *output_str(char name[])
 {
-	char buff[400];
+	char buff[600];
 	char *buff_char = new char[200] {'\0'};
 	ifstream fin(name); 
-	fin.getline(buff, 400);
+	fin.getline(buff, 600);
 	fin.close();
 	int i = 0;
 	int k = 0;
@@ -114,8 +137,97 @@ char *output_str(char name[])
 		i = i + 2;
 		k++;
 	}
-
+	for (int i = 0; i < SIZE; i++)
+	{
+		if (buff_char[i] == 'М')
+		{
+			buff_char[i] = '\0';
+		}
+	}
 	return buff_char;
+}
+/*ищет число в файле по его момеру. Возвращает char. Если номер находится вне границ файла, возвращает '&'
+аргументы:
+0-имя файла
+1-номер символа*/
+int find(char name[], int num)
+{
+	char buff[600];
+	char buff_char[200];
+	char nums_char[200] = { '\0' };
+	int nums = 0;
+	ifstream fin(name);
+	fin.getline(buff, 600);
+	int current = 1;
+	int size = 0;
+	bool isFound = false;
+	fin.close();
+	int i = 0;
+	int k = 0;
+	char x = ' ';
+	while (getdigit(buff[i]) * 10 + getdigit(buff[i + 1]) != -52)
+	{
+		x = getdigit(buff[i]) * 10 + getdigit(buff[i + 1]);
+		buff_char[k] = x;
+		i = i + 2;
+		k++;
+	}
+	for (int i = 0; i < SIZE; i++)
+	{
+		if (buff_char[i] == 'М')
+		{
+			buff_char[i] = '\0';
+		}
+	}
+	i = 0;
+	int j = 0;
+	while(buff_char[i]!='\0')
+	{
+		if (buff_char[i] == ' ' || buff_char[i] == '\n')
+		{
+			current++;
+		}
+		if (current == num)
+		{
+			isFound = true;
+			int o = 0;
+			j = i;
+			if (num != 1)
+			{
+				j = i + 1;
+			}
+			while (buff_char[j] != ' '&&buff_char[j] != '\n')
+			{
+				nums_char[o] = buff_char[j];
+				o++;
+				j++;
+			}
+			nums_char[o + 1] = '\0';
+			o = 0;
+			while (nums_char[o] != '\0')
+			{
+				size++;
+				o++;
+			}
+			o = 0;
+			while (nums_char[o] != '\0')
+			{
+				nums = nums + getdigit(nums_char[o])*pow(10, size - 1);
+				size--;
+				o++;
+			}
+			i = j-1;
+		}
+		i++;
+	}
+	if (!isFound)
+	{
+		return 2000;
+	}
+	else
+	{
+		return nums;
+	}
 }
 
 int main()
@@ -200,10 +312,16 @@ int main()
 				switch (n)
 				{
 				case 1:
-					cout << "Введите символы. Разделяйте числа запятой. Переход на новую строку - символ ';'" << endl;
+					cout << "Введите символы. Разделяйте числа запятой. Переход на новую строку - символ ';' Максимальное число - 1000" << endl;
 					cin >> nums;
 					for (int i = 0; i < SIZE; i++)
 					{
+						if (getdigit(nums[i]) >= 1 && getdigit(nums[i + 1]) >= 0 && getdigit(nums[i + 2]) >= 0 && getdigit(nums[i + 3]) >= 0)
+						{
+							cout << "Неправильная последовательность" << endl;
+							system("pause");
+							main();
+						}
 						if (isdigit(nums[i]))
 						{
 							if (nums[i + 1] != ',' && nums[i + 1] != ';' && nums[i + 1] != '\0' && !(isdigit(nums[i + 1])))
@@ -312,7 +430,7 @@ int main()
 				}
 				cout << endl;
 				system("pause");
-				fill_file(name, nums);
+				fill_file(name, nums,0);
 				cout << endl<<"Файл успешно заполнен" << endl;
 				system("pause");
 				main();
@@ -357,6 +475,146 @@ int main()
 				system("pause");
 				main();
 			}
+		break;
+		case 4:
+			cout << "Введите название файла без расширения на английском без точки. В случае ,если расширение будет введено, оно будет по умолчанию изменено на .txt. В случае, если будет введена точка, она и все за ней будет заменено на '.txt'" << endl;
+			cin >> name;
+			for (int i = 0; i < 100; i++)
+			{
+				if (name[i] == '.')
+				{
+					name[i + 1] = 't';
+					name[i + 2] = 'x';
+					name[i + 3] = 't';
+					break;
+				}
+				else if (name[i] == '\0')
+				{
+					name[i] = '.';
+					name[i + 1] = 't';
+					name[i + 2] = 'x';
+					name[i + 3] = 't';
+					break;
+				}
+			}
+			if (check(name) != 1)
+			{
+				cout << "Такого файла не существует. Если Вы хотите создать файл, воспользуйтесь 1 пунктом меню" << endl;
+				system("pause");
+				main();
+			}
+			else
+			{
+				cout << "Проверка пройдена успешно" << endl;
+				system("pause");
+				system("cls");
+				cout << "Введите числа, которые надо добавить в файл"<<endl;
+				cout << "Разделяйте числа запятой" << endl;
+				cin >> nums;
+				for (int i = 0; i < SIZE; i++)
+				{
+					if (isdigit(nums[i]))
+					{
+						if (nums[i + 1] != ',' && nums[i + 1] == ';' && nums[i + 1] != '\0' && !(isdigit(nums[i + 1])))
+						{
+							cout << "Неправильная последовательность" << endl;
+							system("pause");
+							main();
+						}
+					}
+					else if (nums[i] == ',')
+					{
+						if (!(isdigit(nums[i + 1])))
+						{
+							cout << "Неправильная последовательность" << endl;
+							system("pause");
+							main();
+						}
+					}
+					else if (nums[0] == '\0')
+					{
+						cout << "Неправильная последовательность" << endl;
+						system("pause");
+						main();
+					}
+					else if (nums[i] == '\0' && nums[i + 1] == '\0')
+					{
+						break;
+					}
+				}
+				for (int i = 0; i < SIZE; i++)
+				{
+					if (nums[i] == ',')
+					{
+						nums[i] = ' ';
+					}
+				}
+				fill_file(name, nums,1);
+				cout << "Строки успешно добавлены" << endl;
+				system("pause");
+				main();
+			}
+		break;
+		case 5:
+			cout << "Введите название файла без расширения на английском без точки. В случае ,если расширение будет введено, оно будет по умолчанию изменено на .txt. В случае, если будет введена точка, она и все за ней будет заменено на '.txt'" << endl;
+			cin >> name;
+			for (int i = 0; i < 100; i++)
+			{
+				if (name[i] == '.')
+				{
+					name[i + 1] = 't';
+					name[i + 2] = 'x';
+					name[i + 3] = 't';
+					break;
+				}
+				else if (name[i] == '\0')
+				{
+					name[i] = '.';
+					name[i + 1] = 't';
+					name[i + 2] = 'x';
+					name[i + 3] = 't';
+					break;
+				}
+			}
+			if (check(name) != 1)
+			{
+				cout << "Такого файла не существует. Если Вы хотите создать файл, воспользуйтесь 1 пунктом меню" << endl;
+				system("pause");
+				main();
+			}
+			else
+			{
+				cout << "Проверка пройдена успешно" << endl;
+				system("pause");
+				system("cls");
+				cout << "Введите номер элемента для поиска" << endl;
+				int n;
+				cin >> n;
+				if (n < 1)
+				{
+					cout << "Номер элемента не может быть меньше 1" << endl;
+					system("pause");
+					main();
+				}
+				else
+				{
+					int num = find(name, n);
+					if (num == 2000)
+					{
+						cout << "Элемента с таким номером не существует" << endl;
+						system("pause");
+						main();
+					}
+					else
+					{
+						cout << "Элемент файла под номером " << n << " это - " << num << endl;
+					}
+					system("pause");
+					main();
+				}
+			}
+		break;
+		case 6:
 		break;
 		case 9:
 			cout << "Are you sure want to exit? Print y/n" << endl;

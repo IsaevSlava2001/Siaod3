@@ -12,6 +12,8 @@ int main()
 	char name[SIZE] = "";
 	char nums[SIZE] = "";
 	bool isNewline = false;
+	int iteration = 0;
+	int y = 0;
 	setlocale(LC_ALL,"rus"); 
 	system("cls");
 	int menu;
@@ -168,39 +170,44 @@ int main()
 							i = i + 2;
 							isNewline = false;
 						}
-						else if (num > 99 && num < 400)
+						else if (num > 99 && num < 500)
 						{
-							nums[i + 2] = getdigit(num % 10);
 							num = num / 10;
 							nums[i + 1] = getdigit(num % 10);
 							nums[i] = getdigit(num / 10);
-							nums[i + 3] = ' ';
-							i = i + 3;
+							nums[i + 2] = ' ';
+							i = i + 2;
 							isNewline = false;
 						}
-						else if (num > 399)
+						else if (num > 499)
 						{
-							if (!isNewline)
+							if (iteration != 1)
 							{
-								if (nums[i - 1] == ' ')
+								if (!isNewline)
 								{
-									nums[i - 1] = '\n';
-									i = i - 1;
+									if (nums[i - 1] == ' ')
+									{
+										nums[i - 1] = '\n';
+										i = i - 1;
+									}
+									else
+									{
+										nums[i] = '\n';
+									}
+									isNewline = true;
 								}
 								else
 								{
-									nums[i] = '\n';
+									i = i - 1;
 								}
-								isNewline = true;
-							}
-							else
-							{
-								i = i - 1;
 							}
 						}
-
+						iteration++;
+						y = i;
 					}
-					nums[100] = '\0';
+					nums[y + 1] = '9';
+					nums[y + 2] = '5';
+					nums[103] = '\0';
 					break;
 				default:
 					cout << "Ошибка" << endl;
@@ -298,10 +305,16 @@ int main()
 				system("pause");
 				system("cls");
 				cout << "Введите числа, которые надо добавить в файл"<<endl;
-				cout << "Разделяйте числа запятой" << endl;
+				cout << "Разделяйте числа запятой. Максимальное число - 99" << endl;
 				cin >> nums;
 				for (int i = 0; i < SIZE; i++)
 				{
+					if ((getdigit(nums[i]) >= 1 && nums[i] != ','&&nums[i] != ';'&&nums[i] != '\0') && (getdigit(nums[i + 1]) >= 0 && nums[i + 1] != ','&&nums[i + 1] != ';'&&nums[i + 1] != '\0') && (getdigit(nums[i + 2]) >= 0 && nums[i + 2] != ','&&nums[i + 2] != ';'&&nums[i + 2] != '\0'))
+					{
+						cout << "Неправильная последовательность" << endl;
+						system("pause");
+						main();
+					}
 					if (isdigit(nums[i]))
 					{
 						if (nums[i + 1] != ',' && nums[i + 1] == ';' && nums[i + 1] != '\0' && !(isdigit(nums[i + 1])))
@@ -311,7 +324,7 @@ int main()
 							main();
 						}
 					}
-					else if (nums[i] == ',')
+					else if (nums[i] == ',' || nums[i] != ';')
 					{
 						if (!(isdigit(nums[i + 1])))
 						{
@@ -321,6 +334,12 @@ int main()
 						}
 					}
 					else if (nums[0] == '\0')
+					{
+						cout << "Неправильная последовательность" << endl;
+						system("pause");
+						main();
+					}
+					else if (nums[i] == ';')
 					{
 						cout << "Неправильная последовательность" << endl;
 						system("pause");

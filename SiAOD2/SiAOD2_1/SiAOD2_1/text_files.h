@@ -2,7 +2,6 @@
 #include <iostream>
 #include <random>
 #include <fstream>
-#include "text_files.h"
 #define SIZE 200
 using namespace std;
 /*возвращает число в виде строки
@@ -70,35 +69,32 @@ void fill_file(char name[], char nums[], int fill)
 {
 	if (fill == 0)
 	{
-		int pos_temp = 0;
+		int i = 0;
 		ofstream file;
 		file.open(name);
 		if (file.is_open())
 		{
-			while (nums[pos_temp] != '\0')
+			while (nums[i] != '\0')
 			{
-				int x = nums[pos_temp];
-				file << x;
-				pos_temp++;
+				file << nums[i];
+				i++;
 			}
 		}
 		file.close();
 	}
 	else if (fill == 1)
 	{
-		int pos_temp = 0;
+		int i = 0;
 		ofstream file;
 		file.open(name, ios::app);
 		if (file.is_open())
 		{
 			char n = '\n';
-			int x = n;
-			file << x;
-			while (nums[pos_temp] != '\0')
+			file << n;
+			while (nums[i] != '\0')
 			{
-				int x = nums[pos_temp];
-				file << x;
-				pos_temp++;
+				file << nums[i];
+				i++;
 			}
 		}
 		file.close();
@@ -123,28 +119,30 @@ int check(char name[])
 0-имя файла*/
 char *output_str(char name[])
 {
-	char buff[600];
 	char *buff_char = new char[200]{ '\0' };
 	ifstream fin(name);
-	fin.getline(buff, 600);
-	fin.close();
-	int pos_temp = 0;
-	int k = 0;
-	char x = ' ';
-	while (getdigit(buff[pos_temp]) * 10 + getdigit(buff[pos_temp + 1]) != -52)
+	char ch;
+	int i = 0;
+	do
 	{
-		x = getdigit(buff[pos_temp]) * 10 + getdigit(buff[pos_temp + 1]);
-		buff_char[k] = x;
-		pos_temp = pos_temp + 2;
-		k++;
-	}
-	for (int pos_temp = 0; pos_temp < SIZE; pos_temp++)
-	{
-		if (buff_char[pos_temp] == 'М')
+		ch = fin.get(); 
+		if (ch == '\n')
 		{
-			buff_char[pos_temp] = '\0';
+			buff_char[i] = '\n';
 		}
-	}
+		else if (getdigit(ch) == -1)
+		{
+			break;
+		}
+		else
+		{
+			buff_char[i] = ch;
+		}
+		i++;
+		
+	} while (getdigit(ch) != -1);
+	buff_char[i + 1] = '\0';
+	fin.close();
 	return buff_char;
 }
 /*ищет число в файле по его момеру. Возвращает char. Если номер находится вне границ файла, возвращает 2000
@@ -153,38 +151,40 @@ char *output_str(char name[])
 1-номер символа*/
 int find(char name[], int num)
 {
-	char buff[600];
 	char buff_char[200];
 	char nums_char[200] = { '\0' };
 	int nums = 0;
 	ifstream fin(name);
-	fin.getline(buff, 600);
+	int i = 0;
+	char ch;
+	do
+	{
+		ch = fin.get();
+		if (ch == '\n')
+		{
+			buff_char[i] = '\n';
+		}
+		else if (getdigit(ch) == -1)
+		{
+			break;
+		}
+		else
+		{
+			buff_char[i] = ch;
+		}
+		i++;
+
+	} while (getdigit(ch) != -1);
 	int current = 1;
 	int size = 0;
 	bool isFound = false;
 	fin.close();
-	int pos_temp = 0;
-	int k = 0;
-	char x = ' ';
-	while (getdigit(buff[pos_temp]) * 10 + getdigit(buff[pos_temp + 1]) != -52)
-	{
-		x = getdigit(buff[pos_temp]) * 10 + getdigit(buff[pos_temp + 1]);
-		buff_char[k] = x;
-		pos_temp = pos_temp + 2;
-		k++;
-	}
-	for (int pos_temp = 0; pos_temp < SIZE; pos_temp++)
-	{
-		if (buff_char[pos_temp] == 'М')
-		{
-			buff_char[pos_temp] = '\0';
-		}
-	}
-	pos_temp = 0;
+	i = 0;
+	i = 0;
 	int j = 0;
-	while (buff_char[pos_temp] != '\0')
+	while (buff_char[i] != '\0')
 	{
-		if (buff_char[pos_temp] == ' ' || buff_char[pos_temp] == '\n')
+		if (buff_char[i] == ' ' || buff_char[i] == '\n')
 		{
 			current++;
 		}
@@ -192,10 +192,10 @@ int find(char name[], int num)
 		{
 			isFound = true;
 			int o = 0;
-			j = pos_temp;
+			j = i;
 			if (num != 1)
 			{
-				j = pos_temp + 1;
+				j = i + 1;
 			}
 			while (buff_char[j] != ' '&&buff_char[j] != '\n')
 			{
@@ -217,9 +217,9 @@ int find(char name[], int num)
 				size--;
 				o++;
 			}
-			pos_temp = j - 1;
+			i = j - 1;
 		}
-		pos_temp++;
+		i++;
 	}
 	if (!isFound)
 	{
@@ -235,38 +235,18 @@ int find(char name[], int num)
 0-имя файла*/
 int count_nums(char name[])
 {
-	char buff[600];
-	char buff_char[200];
-	char nums_char[200] = { '\0' };
-	ifstream fin(name);
-	fin.getline(buff, 600);
-	int pos_temp = 0;
+	char* buff_char = new char[200];
+	buff_char = output_str(name);
 	int k = 0;
 	int count = 1;
-	fin.close();
-	char x = ' ';
-	while (getdigit(buff[pos_temp]) * 10 + getdigit(buff[pos_temp + 1]) != -52)
+	int i = 0;
+	while (buff_char[i] != '\0')
 	{
-		x = getdigit(buff[pos_temp]) * 10 + getdigit(buff[pos_temp + 1]);
-		buff_char[k] = x;
-		pos_temp = pos_temp + 2;
-		k++;
-	}
-	for (int pos_temp = 0; pos_temp < SIZE; pos_temp++)
-	{
-		if (buff_char[pos_temp] == 'М')
-		{
-			buff_char[pos_temp] = '\0';
-		}
-	}
-	pos_temp = 0;
-	while (buff_char[pos_temp] != '\0')
-	{
-		if (buff_char[pos_temp] == ' ' || buff_char[pos_temp] == '\n')
+		if (buff_char[i] == ' ' || buff_char[i] == '\n')
 		{
 			count++;
 		}
-		pos_temp++;
+		i++;
 	}
 	return count;
 }
@@ -292,14 +272,15 @@ void reverse_file(char name[])
 	{
 		i++;
 	}
+	i--;
 	j = i;
 	while (nums_return[j] != ' ' && nums_return[j] != '\n')
 	{
 		j--;
 	}
 	pos_temp = j;
-	int size = i - j - 1;
-	for (j + 1; j < i - 1; j++)
+	int size = i - j;
+	for (j; j <= i - 1; j++)
 	{
 		temp = temp + getdigit(nums_return[j + 1]) * pow(10, size - 1);
 		size--;
@@ -344,15 +325,22 @@ void reverse_file(char name[])
 
 	}
 	i++;
-	for (int k = i; k < pos_temp + 1; k++)
+	for (int k = i; k < pos_temp+1; k++)
 	{
 		new_mass[k] = nums_return[pos_temp1 + 1];
 		pos_temp1++;
 	}
-	pos_temp1++;
-	pos_temp1++;
-	new_mass[pos_temp1] = ' ';
-	pos_temp1++;
+	if (temp1 < 10)
+	{
+		pos_temp1++;
+		pos_temp1++;
+		new_mass[pos_temp1] = ' ';
+		pos_temp1++;
+	}
+	else
+	{
+		pos_temp1++;
+	}
 	if (temp1 < 10)
 	{
 		new_mass[pos_temp1] = getdigit(temp1);

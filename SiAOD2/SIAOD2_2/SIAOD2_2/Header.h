@@ -13,13 +13,6 @@ struct Book
 	char fam[50];
 	char name[50];
 	int year;
-	//int gr_num; //example: 1234 or etc
-	//char sub_name[10]; //example: math or phys or armv or tfya or ciod
-	//int les_num;    //example: 1 or 2 ... or 6
-	//int week_num;   //example: 1 or 2 .. or 17
-	//int day_num;    //example: 1 or 2 .. or 7
-	//char sub_type[10]; //example: lec or prc or lab
-	//int class_num; //example: 123 or 2953 or etc
 };
 int line_counter(ifstream& file)
 {
@@ -174,42 +167,4 @@ void delete_book(fstream& old_file, int year)// 6 задание
 		}
 	}
 }
-
-void new_cab(string name_file)// 7 задание
-{ 
-	/*fstream old_sch(name_file, ios::binary | ios::out | ios::in);
-	ofstream tmp("tmp_sch.txt");
-	old_sch.seekg(0, ios::end);
-	int size = old_sch.tellg();
-	size = size / sizeof(Book);
-	old_sch.seekg(0, ios::beg);
-	Book* tts = new Book[size];
-	Book tt;
-	int flag;
-	old_sch.read((char*)tts, sizeof(Book) * size);
-	for (int i = 0; i < size - 1; i++)
-	{
-		for (int j = i + 1; j < size; ++j)
-		{
-			if ((tts[j].les_num == tts[i].les_num) && (tts[j].class_num == tts[i].class_num))
-			{
-
-				tts[j].class_num = tts[j].class_num + 1;
-				tmp << tts[j].gr_num << " " << tts[j].sub_name << " " << tts[j].les_num << " " << tts[j].week_num
-					<< " " << tts[j].day_num << " " << tts[j].sub_type << " " << tts[j].class_num << "\n";
-				continue;
-			}
-		}
-		tmp << tts[i].gr_num << " " << tts[i].sub_name << " " << tts[i].les_num << " " << tts[i].week_num
-			<< " " << tts[i].day_num << " " << tts[i].sub_type << " " << tts[i].class_num << "\n";
-	}
-	tmp.close();
-	old_sch.close();
-	ifstream txt("tmp_sch.txt", ios::in);
-	ofstream bin(name_file, ios::binary);
-	txt_to_bin(txt, bin);
-	txt.close();
-	bin.close();*/
-}
-
 #endif //SIAOD_HEAD_2_2_H

@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 using namespace std;
+int i = 0;
 struct Book
 {
 	long long int ISBN;
@@ -13,9 +14,7 @@ struct Book
 struct TypeItembin
 {
 	long long int key = 0;
-	string offset = "null";
-	string offset2 = "null";
-	int offset3 = 0;
+	int offset = 0;
 	bool openOrClose = true;
 	bool deleteOrnot = false;
 };
@@ -33,23 +32,19 @@ struct HashTablebin
 		deletedCount = 0;
 	}
 };
-int InsertInHashTable(long long int key, string offset[], HashTablebin& t);
+int InsertInHashTable(long long int key, int offset, HashTablebin& t);
 int search(HashTablebin& t, long long int key);
 int reHash(HashTablebin& old)
 {
 	int size = old.L;
 	size = size + 10;
 	HashTablebin new_hash;
-	string data[3];
 	new_hash.CreateHashTable(size);
 	for (int i = 0; i < size - 10; i++)
 	{
 		if (old.T[i].key != 0)
 		{
-			data[0] = old.T[i].offset;
-			data[1] = old.T[i].offset2;
-			data[2] = to_string(old.T[i].offset3);
-			InsertInHashTable(old.T[i].key, data, new_hash);
+			InsertInHashTable(old.T[i].key, old.T[i].offset, new_hash);
 			int t = search(new_hash,old.T[i].key);
 			new_hash.T[t].deleteOrnot = old.T[i].deleteOrnot;
 			new_hash.T[t].openOrClose = old.T[i].openOrClose;
@@ -60,14 +55,29 @@ int reHash(HashTablebin& old)
 }
 int Hash(long long int k, int L, int iter)
 {
-	int h2 = k % (L / 2 + 1);
-	if (h2 == 0)
+	long long int h1;
+	if (k % 2 == 0)
 	{
-		h2++;
+		h1 = k << 2 % 9;
 	}
-	return k%L + iter*h2;
+	else
+	{
+		h1 = 9 % k << 2;
+	}
+	h1++;
+	long long int h2;
+	if (h1 % 2 == 0)
+	{
+		h2 = h1 % 7;
+	}
+	else
+	{
+		h2 = 7 % h1;
+	}
+	h2++;
+	return (h1 + iter*h2) % L;
 }
-int InsertInHashTable(long long int key, string offset[], HashTablebin& t)
+int InsertInHashTable(long long int key, int offset, HashTablebin& t)
 {
 	if (t.insertedCount >= t.L*0.75)
 	{
@@ -77,25 +87,22 @@ int InsertInHashTable(long long int key, string offset[], HashTablebin& t)
 	int i = Hash(key, t.L, iteration);
 	while (i < t.L&&t.T[i].openOrClose == false)
 	{
+		if (iteration > t.L)
+		{
+			reHash(t);
+		}
 		iteration++;
 		i = Hash(key, t.L, iteration);
 	}
 	while (i > t.L)
 	{
-		reHash(t);
-		while (i < t.L&&t.T[i].openOrClose == false)
-		{
-			iteration++;
-			i = Hash(key, t.L, iteration);
-		}
+		return -1;
 	}
 	if (i < t.L)
 	{
 
 		t.T[i].key = key;
-		t.T[i].offset = offset[0];
-		t.T[i].offset2 = offset[1];
-		t.T[i].offset3 = stoi(offset[2]);
+		t.T[i].offset = offset;
 		t.T[i].openOrClose = false;
 		t.insertedCount++;
 		return 0;
@@ -107,16 +114,16 @@ int InsertInHashTable(long long int key, string offset[], HashTablebin& t)
 }
 void outTable(HashTablebin& t)
 {
-	cout << "номер" << '\t' << "ISBN" << '\t' << '\t' << "Имя автора" << '\t' << "Название" << '\t' << "Год выпуска" << '\t' << "свободен" << '\t' << "удален" << '\n';
+	cout << "номер" << '\t' << "ISBN" << '\t' << '\t' << "Номер записи" << '\t' << "свободен" << '\t' << "удален" << '\n';
 	for (int i = 0; i < t.L; i++)
 	{
 		if (t.T[i].key == 0)
 		{
-			cout << i << '\t' << t.T[i].key << '\t' << '\t' << t.T[i].offset << '\t' << '\t' << t.T[i].offset2 << '\t' << '\t' << t.T[i].offset3 << '\t' << '\t' << t.T[i].openOrClose << '\t' << '\t' << t.T[i].deleteOrnot << '\n';
+			cout << i << '\t' << t.T[i].key << '\t' << '\t' << t.T[i].offset << '\t'<<'\t' << t.T[i].openOrClose << '\t' << '\t' << t.T[i].deleteOrnot << '\n';
 		}
 		else
 		{
-			cout << i << '\t' << t.T[i].key << '\t' << t.T[i].offset << '\t' << '\t' << t.T[i].offset2 << '\t' << '\t' << t.T[i].offset3 << '\t' << '\t' << t.T[i].openOrClose << '\t' << '\t' << t.T[i].deleteOrnot << '\n';
+			cout << i << '\t' << t.T[i].key << '\t' << t.T[i].offset << '\t' << '\t' << t.T[i].openOrClose << '\t' << '\t' << t.T[i].deleteOrnot << '\n';
 		}
 	}
 }
@@ -133,26 +140,14 @@ int search(HashTablebin& t, long long int key)
 	{
 		return -1;
 	}
-	return i;
+	return t.T[i].offset;
 }
-Book getISBN(HashTablebin& t, int i)
+void find(int i, ifstream& file)
 {
 	Book book;
-	book.ISBN = 0;
-	for (int l = 0; l < 50; l++)
-	{
-		book.fam[l] = '\0';
-		book.name[l] = '\0';
-	}
-	book.year = 0;
-	if (t.T[i].key != 0)
-	{
-		book.ISBN = t.T[i].key;
-		strcpy(book.fam, t.T[i].offset.c_str());
-		strcpy(book.name, t.T[i].offset2.c_str());
-		book.year = t.T[i].offset3;
-	}
-	return book;
+	file.seekg(i*sizeof(Book),ios::beg);
+	file.read((char*)&book, sizeof(book));
+	cout << book.ISBN << ' ' << book.fam << ' ' << book.name << ' ' << book.year << '\n';
 }
 int deleteFromHashTable(HashTablebin& t, long long int key)
 {
@@ -164,9 +159,7 @@ int deleteFromHashTable(HashTablebin& t, long long int key)
 	else
 	{
 		t.T[i].key = 0;
-		t.T[i].offset = "null";
-		t.T[i].offset2 = "null";
-		t.T[i].offset3 = 0;
+		t.T[i].offset = 0;
 		t.T[i].deleteOrnot = true;
 		t.T[i].openOrClose = true;
 		t.deletedCount++;
@@ -176,20 +169,17 @@ int deleteFromHashTable(HashTablebin& t, long long int key)
 int ReadBin(HashTablebin& t, ifstream& bin_file)
 {
 	Book book;
-	string data[3];
 	bool isGood = true;
 	while (true)
 	{
 		bin_file.read((char*)&book, sizeof(book));
 		if (!bin_file.eof())
 		{
-			data[0] = book.fam;
-			data[1] = book.name;
-			data[2] = to_string(book.year);
-			if (InsertInHashTable(book.ISBN, data, t) != 0)
+			if (InsertInHashTable(book.ISBN, i, t) != 0)
 			{
 				isGood = false;
 			}
+			i++;
 		}
 		else
 		{
@@ -203,21 +193,6 @@ int ReadBin(HashTablebin& t, ifstream& bin_file)
 			}
 		}
 	}
-}
-int WriteBin(HashTablebin& t, ofstream& bin_file)
-{
-	Book book;
-	int i = 0;
-	while (i<t.L)
-	{
-		book = getISBN(t, i);
-		if (book.ISBN != 0)
-		{
-			bin_file.write((char*)&book, sizeof(Book));
-		}
-		i++;
-	}
-	return 0;
 }
 //----------------------------------------
 int line_counter(ifstream& file)
@@ -249,8 +224,9 @@ void txt_to_bin(ifstream& txt_file, ofstream& bin_file)
 	}
 
 }
-void AddToBin(ofstream& bin_file, Book book)
+void AddToBin(ofstream& bin_file, Book book, HashTablebin& t)
 {
+	bin_file.seekp(0,ios::end);
 	bin_file.write((char*)&book, sizeof(Book));
 }
 
@@ -310,7 +286,8 @@ void remove_struct(string bin_name, long long key)
 	replace = get_struct(bin_name, -1);
 	ifstream bin_file(bin_name, ios::binary | ios::in);
 	ofstream tmp("tmp_rem.txt");
-	while (true) {
+	while (true)
+	{
 		bin_file.read((char*)&book, sizeof(book));
 
 		if (!bin_file.eof())

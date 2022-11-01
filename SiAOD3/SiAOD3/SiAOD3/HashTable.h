@@ -45,12 +45,27 @@ int reHash(HashTable& old)
 }
 int Hash(int k, int L, int iter)
 {
-	int h2 = k % (L / 2 + 1);
-	if (h2 == 0)
+	int h1;
+	if (k % 2 == 0)
 	{
-		h2++;
+		h1 = k<<2%9;
 	}
-	return k%L + iter*h2;
+	else
+	{
+		h1 = 9%k<<2;
+	}
+	h1++;
+	int h2;
+	if (h1 % 2 == 0)
+	{
+		h2 = h1 % 7;
+	}
+	else
+	{
+		h2 = 7 % h1;
+	}
+	h2++;
+	return (h1 + iter*h2)%L;
 }
 
 int InsertInHashTable(int key, int offset, HashTable& t)
@@ -63,17 +78,12 @@ int InsertInHashTable(int key, int offset, HashTable& t)
 	int i = Hash(key, t.L, iteration);
 	while (i < t.L&&t.T[i].openOrClose == false)
 	{
+		if (iteration > t.L)
+		{
+			reHash(t);
+		}
 		iteration++;
 		i = Hash(key, t.L, iteration);
-	}
-	while (i > t.L)
-	{
-		reHash(t);
-		while (i < t.L&&t.T[i].openOrClose == false)
-		{
-			iteration++;
-			i = Hash(key, t.L, iteration);
-		}
 	}
 	if (i < t.L)
 	{

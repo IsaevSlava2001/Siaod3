@@ -8,7 +8,7 @@ void menubin()
 	ofstream outp;
 	string inp_file, outp_file;
 	system("cls");
-	cout << "Добро пожаловать в программу по работе с бинарными файлами\nПожалуйста введите номер задания\n1-Текстовый файл в бинарный\n2-Бинарный файл в текстовый\n3-Добавить запись в бинарный файл\n4-Удалить запись из бинарного файла\n5-найти запись с нужным ключом\n6-Вывести бинарный файл\nлюбой другой символ приведет к выходу из программы" << endl;
+	cout << "Добро пожаловать в программу по работе с бинарными файлами\nПожалуйста введите номер задания\n1-Текстовый файл в бинарный\n2-Бинарный файл в текстовый\n5-найти запись с нужным ключом\n6-Вывести бинарный файл\nлюбой другой символ приведет к выходу из программы" << endl;
 	int k;
 	cin >> k;
 	switch (k)
@@ -74,39 +74,6 @@ void menubin()
 			system("pause");
 			menubin();
 		}
-		break;
-	case 3:
-	{
-		Book temp;
-		string temp1;
-		outp_file = "";
-		cout << "Введите имя бинарного файла:\n";
-		cin >> outp_file;
-		outp.open(outp_file, ios::binary | ios::in);
-		if (outp.good())
-		{
-			cout << "Введите ISBN" << endl;
-			cin >> temp.ISBN;
-			cout << "Введите Имя автора(английский язык)" << endl;
-			cin >> temp1;
-			strcpy(temp.fam, temp1.c_str());
-			cout << "Введите название книги(английский язык)" << endl;
-			cin >> temp1;
-			strcpy(temp.name, temp1.c_str());
-			cout << "Введите год издания" << endl;
-			cin >> temp.year;
-			AddToBin(outp, temp);
-			outp.close();
-			system("pause");
-			menubin();
-		}
-		else
-		{
-			cout << " Файла с таким именем не существует.";
-			system("pause");
-			menubin();
-		}
-	}
 		break;
 	case 4:
 	{
@@ -224,7 +191,7 @@ int main()
 	while (true)
 	{
 		system("cls");
-		cout << "Добро пожаловать в программу по работе с хеш таблицами\nПожалуйста введите номер задания\n1-Ввести ключ в таблицу\n2-Удалить ключ из таблицы\n3-Найти ключ в таблице\n4-Рехешировать таблицу(может происходить само по мере увеличения таблицы)\n5-Вывести таблицу\n6-перейти в меню работы с бинарными файлами\n7-Считать текст из бинарного файла и занести его в хеш-таблицу\n8-Найти ключ в хеш-таблице бинарных файлов\n9-Удалить ключ из хеш-таблицы бинарных файлов\n10-Рехешировать хеш-таблицу бинарных файлов(может происходить само по мере увеличения таблицы)\n11-Вывести хеш-таблицу бинарными файлами\n12-Записать хеш-таблицу бинарных файлов в бинарный файл\nлюбой другой символ приведет к выходу из программы" << endl;
+		cout << "Добро пожаловать в программу по работе с хеш таблицами\nПожалуйста введите номер задания\n1-Ввести ключ в таблицу\n2-Удалить ключ из таблицы\n3-Найти ключ в таблице\n4-Рехешировать таблицу(может происходить само по мере увеличения таблицы)\n5-Вывести таблицу\n6-перейти в меню работы с бинарными файлами\n7-Считать текст из бинарного файла и занести его в хеш-таблицу\n8-Найти ключ в хеш-таблице бинарных файлов\n9-Удалить ключ из хеш-таблицы бинарных файлов\n10-Рехешировать хеш-таблицу бинарных файлов(может происходить само по мере увеличения таблицы)\n11-Вывести хеш-таблицу бинарными файлами\n12-Добавить запись в бинарный файл\n13-Удалить запись из бинарного файла\nлюбой другой символ приведет к выходу из программы" << endl;
 		int k;
 		cin >> k;
 		switch (k)
@@ -320,12 +287,14 @@ int main()
 				{
 					cout << "Успешно" << endl;
 					system("pause");
+					inp.close();
 					break;
 				}
 				else
 				{
 					cout << "Возникли ошибки" << endl;
 					system("pause");
+					inp.close();
 					break;
 				}
 			}
@@ -333,25 +302,36 @@ int main()
 			{
 				cout << "Файл не найден" << endl;
 				system("pause");
+				inp.close();
 				break;
 			}
 			break;
 		case 8:
 			system("cls");
-			cout << "Введите ключ. Обязательно число" << endl;
-			cin >> h1;
-			i = search(Tb, h1);
-			if (i != -1)
+			cout << "Введите название файла" << endl;
+			cin >> inp_file;
+			inp.open(inp_file, ios::binary);
+			if (inp.good())
 			{
-				itembin = Tb.T[i];
-				cout << "ISBN\tИмя Автора\tНазвание\tГод выпуска" << endl;
-				cout << itembin.key << '\t' << itembin.offset << itembin.offset2 << itembin.offset3 << endl;
-				system("pause");
-				break;
+				cout << "Введите ключ. Обязательно число" << endl;
+				cin >> h1;
+				i = search(Tb, h1);
+				if (i != -1)
+				{
+					find(i, inp);
+					system("pause");
+					break;
+				}
+				else
+				{
+					cout << "Запись не найдена" << endl;
+					system("pause");
+					break;
+				}
 			}
 			else
 			{
-				cout << "Запись не найдена" << endl;
+				cout << "Файл не найден" << endl;
 				system("pause");
 				break;
 			}
@@ -393,34 +373,65 @@ int main()
 			outTable(Tb);
 			system("pause");
 			break;
-			break;
 		case 12:
-			system("cls");
-			cout << "Введите название файла" << endl;
+		{
+			Book temp;
+			string temp1;
+			outp_file = "";
+			cout << "Введите имя бинарного файла:\n";
 			cin >> outp_file;
-			outp.open(outp_file, ios::binary);
+			outp.open(outp_file, ios::binary | ios::in);
 			if (outp.good())
 			{
-				if (WriteBin(Tb, outp) == 0)
-				{
-					cout << "Успешно" << endl;
-					system("pause");
-					break;
-				}
-				else
-				{
-					cout << "Возникли ошибки" << endl;
-					system("pause");
-					break;
-				}
+				cout << "Введите ISBN" << endl;
+				cin >> temp.ISBN;
+				cout << "Введите Имя автора(английский язык)" << endl;
+				cin >> temp1;
+				strcpy(temp.fam, temp1.c_str());
+				cout << "Введите название книги(английский язык)" << endl;
+				cin >> temp1;
+				strcpy(temp.name, temp1.c_str());
+				cout << "Введите год издания" << endl;
+				cin >> temp.year;
+				AddToBin(outp, temp, Tb);
+				outp.close();
+				inp.open(outp_file, ios::binary);
+				Tb.CreateHashTable(20);
+				ReadBin(Tb, inp);
+				inp.close();
+				system("pause");
 			}
 			else
 			{
-				cout << "Файл не найден" << endl;
+				cout << " Файла с таким именем не существует.";
 				system("pause");
-				break;
 			}
+		}
 			break;
+		case 13:
+		{
+			inp_file = "";
+			long long int key_val;
+			cout << "Введите имя бинарного файла: \n";
+			cin >> inp_file;
+			ifstream check(inp_file);
+			if (check.is_open())
+			{
+				cout << "Введите ключевой параметр:\n";
+				cin >> key_val;
+				remove_struct(inp_file, key_val);
+				Tb.CreateHashTable(20);
+				ReadBin(Tb, check);
+				check.close();
+				system("pause");
+			}
+			else
+			{
+				cout << "Файла с таким именем не существует. ";
+				system("pause");
+			}
+		}
+		break;
 		default:
 			cout << "Вы уверены, что хотите выйти? Д/Н" << endl;
 			char u;

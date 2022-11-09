@@ -9,7 +9,7 @@ int main()
 {
 	setlocale(LC_ALL, "rus");
 	class node *root = NULL;
-	class node *temp_node = NULL;
+	class nodesplay *root_splay = NULL;
 	string txt_file, bin_file;
 	long long int key;
 	Book temp;
@@ -167,7 +167,7 @@ int main()
 			{
 				cout << "Введите ключ(12 цифр) ";
 				cin >> key;
-				adress = node::search(root, key);
+				adress=node::search(root, key);
 				temp=BinFile::get_class(bin_file, adress);
 				if (temp.ISBN != 0)
 				{
@@ -212,6 +212,116 @@ int main()
 			node::printBT("", root, false, 0);
 			system("pause");
 		}
+		if (k == 10)
+		{
+			system("cls");
+			cout << "Построение косого дерева по файлу" << endl;
+			cout << "Введите имя бинарного файла" << endl;
+			cin >> bin_file;
+			ifstream inp;
+			inp.open(bin_file, ios::binary);
+			if (inp.good())
+			{
+				inp.close();
+				ISBN = BinFile::getISBN(bin_file);
+				while (ISBN[i] != 0)
+				{
+					root_splay = nodesplay::insertsplay(root_splay, ISBN[i], i, 0);
+					i++;
+				}
+				cout << "Успешно" << endl;
+			}
+			else
+			{
+				cout << "Файл не существует" << endl;
+			}
+			system("pause");
+		}
+		if (k == 11)
+		{
+			system("cls");
+			cout << "Добавление элемента в дерево" << endl;
+			cout << "Введите имя бинарного файла" << endl;
+			cin >> bin_file;
+			ofstream outp;
+			outp.open(bin_file, ios::binary);
+			cout << "Введите ISBN(12 цифр) ";
+			cin >> temp.ISBN;
+			cout << "Введите фамилию автора(английский язык) ";
+			cin >> temp.fam;
+			cout << "Введите название книги(английский язык) ";
+			cin >> temp.name;
+			if (outp.good())
+			{
+				BinFile::AddToBin(outp, temp);
+				root_splay = nodesplay::insertsplay(root_splay, temp.ISBN, i, 0);
+				i++;
+			}
+			else
+			{
+				cout << "Такого файла не существует" << endl;
+			}
+			outp.close();
+			system("pause");
+		}
+		if (k == 12)
+		{
+			system("cls");
+			cout << "Поиск по ключу в дереве" << endl;
+			cout << "Введите имя бинарного файла" << endl;
+			cin >> bin_file;
+			ofstream outp;
+			outp.open(bin_file, ios::binary);
+			if (outp.good())
+			{
+				cout << "Введите ключ(12 цифр) ";
+				cin >> key;
+				root_splay=nodesplay::searchsplay(root_splay, key);
+				temp = BinFile::get_class(bin_file, root_splay->value);
+				if (temp.ISBN != 0)
+				{
+					cout << temp.ISBN << " " << temp.fam << "  " << temp.name;
+				}
+				else
+				{
+					cout << "Запись с таким ключом не найдена" << endl;
+				}
+			}
+			else
+			{
+				cout << "такого файла не существует" << endl;
+			}
+			outp.close();
+			system("pause");
+		}
+		if (k == 13)
+		{
+			system("cls");
+			cout << "Удаление элемента из дерева" << endl;
+			cout << "Введите ключ" << endl;
+			cin >> key;
+			root_splay = nodesplay::searchsplay(root_splay, key);
+			if (root_splay->key == key)
+			{
+				root_splay = nodesplay::removesplay(root_splay, key);
+				cout << "Успешно удалено" << endl;
+			}
+			else
+			{
+				cout << "Запись с таким ключом не найдена" << endl;
+			}
+			system("pause");
+		}
+		if (k == 14)
+		{
+			system("cls");
+			cout << "Вывод дерева" << endl;
+			cout << "Вывод ключей дерева" << endl;
+			nodesplay::printsplayBT("", root_splay, false, 1);
+			cout << "Вывод значений дерева" << endl;
+			nodesplay::printsplayBT("", root_splay, false, 0);
+			system("pause");
+		}
 		if (k < 1 || k>14)
 		{
 			cout << "Вы уверены, что хотите выйти? Y/N" << endl;
@@ -225,57 +335,4 @@ int main()
 			}
 		}
 	}
-	/*class nodesplay *root = NULL;
-	long long int *ISBN = new long long int[10000];
-	ISBN = getISBN("1.bin");
-	int i = 0;
-	while (ISBN[i] != 0)
-	{
-		root = insertsplay(root,ISBN[i], i,0);
-		printsplayBT("", root, false, 0);
-		cout << endl;
-		printsplayBT("", root, false, 1);
-		cout << endl;
-		i++;
-	}
-	cout << "average number of turns " <<counter/i << endl;
-	root = searchsplay(root, 547851263942);
-	printsplayBT("", root, false, 0);
-	cout << endl;
-	printsplayBT("", root, false, 1);
-	cout << endl;
-	root= searchsplay(root, 569874120369);
-	printsplayBT("", root, false, 0);
-	cout << endl;
-	printsplayBT("", root, false, 1);
-	cout << endl;
-	root = searchsplay(root, 156987542103);
-	printsplayBT("", root, false, 0);
-	cout << endl;
-	printsplayBT("", root, false, 1);
-	cout << endl;
-	root = removesplay(root, 569874120369);
-	printsplayBT("", root, false, 0);
-	cout << endl;
-	printsplayBT("", root, false, 1);
-	cout << endl;
-	//УДАЛЕНИЕ ЭЛЕМЕНТОВ SPLAY-ДЕРЕВА!!!!!!
-	//printsplayBT("", root, false, 0);
-	//printsplayBT("", root, false, 1);
-	/*class node *root = NULL;
-	long long int *ISBN = new long long int[10000];
-	ISBN= getISBN("1.bin");
-	int i = 0;
-	while (ISBN[i] != 0)
-	{
-		root = insert(root, ISBN[i], i);
-		i++;
-	}
-	//cout << exists(root, 1000)<<endl;
-	//cout << search(root, 93) << endl;
-	printBT("", root, false,1);
-	cout << endl;
-	printBT("", root, false, 0);
-	//root = deleteNode(root, 1000);
-	//printBT("", root, false);*/
 }

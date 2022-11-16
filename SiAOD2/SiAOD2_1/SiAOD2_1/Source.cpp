@@ -305,7 +305,7 @@ int main()
 				system("pause");
 				system("cls");
 				cout << "Введите числа, которые надо добавить в файл"<<endl;
-				cout << "Разделяйте числа запятой. Максимальное число - 99" << endl;
+				cout << "Разделяйте числа запятой. Переход на новую строку - ;. Максимальное число - 99" << endl;
 				cin >> nums;
 				for (int i = 0; i < SIZE; i++)
 				{
@@ -317,14 +317,14 @@ int main()
 					}
 					if (isdigit(nums[i]))
 					{
-						if (nums[i + 1] != ',' && nums[i + 1] == ';' && nums[i + 1] != '\0' && !(isdigit(nums[i + 1])))
+						if (nums[i + 1] != ',' && nums[i + 1] != ';' && nums[i + 1] != '\0' && !(isdigit(nums[i + 1])))
 						{
 							cout << "Неправильная последовательность" << endl;
 							system("pause");
 							main();
 						}
 					}
-					else if (nums[i] == ',' || nums[i] != ';')
+					else if (nums[i] == ',' || nums[i] == ';')
 					{
 						if (!(isdigit(nums[i + 1])))
 						{
@@ -334,12 +334,6 @@ int main()
 						}
 					}
 					else if (nums[0] == '\0')
-					{
-						cout << "Неправильная последовательность" << endl;
-						system("pause");
-						main();
-					}
-					else if (nums[i] == ';')
 					{
 						cout << "Неправильная последовательность" << endl;
 						system("pause");
@@ -355,6 +349,10 @@ int main()
 					if (nums[i] == ',')
 					{
 						nums[i] = ' ';
+					}
+					else if (nums[i] == ';')
+					{
+						nums[i] = '\n';
 					}
 				}
 				fill_file(name, nums,1);

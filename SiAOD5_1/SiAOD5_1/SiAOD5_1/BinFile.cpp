@@ -3,9 +3,9 @@
 int BinFile::txt_to_bin(string txt_file, string bin_file)
 {
 	ifstream inp;
-	inp.open(txt_file, ios::binary);
+	inp.open(txt_file, ios::binary || ios::app);
 	ofstream outp;
-	outp.open(bin_file, ios::binary);
+	outp.open(bin_file, ios::binary || ios::app);
 	if (inp.good() && outp.good())
 	{
 		Book tt;
@@ -31,23 +31,16 @@ int BinFile::txt_to_bin(string txt_file, string bin_file)
 	}
 
 }
-Book BinFile::get_class(string filename, int position)// 4 задание
+Book BinFile::get_class(string filename, int position)
 {
-	Book tt;
-	tt.ISBN = 0;
-	ifstream bin_file(filename, ios::binary | ios::in);
-	if (position == -1)
-	{
-		bin_file.seekg(-1 * (int)sizeof(tt), ios::end);
-	}
-	else
-	{
-		bin_file.seekg((position) * sizeof(tt));
-	}
-	bin_file.read((char*)&tt, sizeof(Book));
+	Book book;
+	ifstream bin_file(filename, ios::binary);
+	bin_file.seekg((position) * sizeof(book));
+	bin_file.read((char*)&book, sizeof(Book));
 	bin_file.close();
-	return tt;
+	return book;
 }
+
 void BinFile::AddToBin(ofstream& bin_file, Book book)
 {
 	bin_file.seekp(0, ios::end);
@@ -56,7 +49,7 @@ void BinFile::AddToBin(ofstream& bin_file, Book book)
 Book BinFile::linear_search(string bin_file, long long int key)
 {
 	ifstream inp;
-	inp.open(bin_file, ios::binary);
+	inp.open(bin_file, ios::binary || ios::app);
 	Book tt;
 	tt.ISBN = 0;
 	while (true)
@@ -80,7 +73,7 @@ Book BinFile::linear_search(string bin_file, long long int key)
 long long int* BinFile::getISBN(string txt_file)
 {
 	ifstream inp;
-	inp.open(txt_file, ios::binary);
+	inp.open(txt_file, ios::binary|| ios::app);
 	Book tt;
 	long long int ISBN[10000] = {0};
 	int i = 0;

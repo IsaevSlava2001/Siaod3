@@ -104,17 +104,15 @@ int main() {
 			int pos_num;
 			cout << "Введите имя бинарного файла: \n";
 			cin >> inp_file;
-			//inp.open(inp_file);
 			ifstream check(inp_file);
 			if (check.is_open())
 			{
 				cout << "Введите номер нужной строки: \n";
 				cin >> pos_num;
 				ifstream tmp(inp_file, ios::binary | ios::in);
-				int c = line_counter(tmp)+1;
-				if (pos_num < c)
+				Book tt = get_struct(inp_file, pos_num-1);
+				if (tt.ISBN != 0)
 				{
-					Book tt = get_struct(inp_file, pos_num);
 					cout << tt.ISBN << ' ' << tt.fam << ' ' << tt.name << ' ' << tt.year << '\n';
 				}
 				else
@@ -135,13 +133,13 @@ int main() {
 					long long int key_val;
 					cout << "Введите имя бинарного файла: \n";
 					cin >> inp_file;
+					Book tt;
 
 					ifstream check(inp_file);
 					if (check.is_open())
 					{
 						cout << "Введите ключевой параметр:\n";
 						cin >> key_val;
-
 						remove_struct(inp_file, key_val);
 					}
 					else

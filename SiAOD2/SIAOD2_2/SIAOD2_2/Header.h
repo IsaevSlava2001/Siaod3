@@ -14,19 +14,6 @@ struct Book
 	char name[50];
 	int year;
 };
-int line_counter(ifstream& file)
-{
-	string num_string = "";
-	int counter = 1;
-	while (!file.eof())
-	{
-		while (getline(file, num_string))
-		{
-			counter++;
-		}
-	}
-	return counter;
-}
 
 void txt_to_bin(ifstream& txt_file, ofstream& bin_file)// 1 задание
 { 
@@ -79,6 +66,7 @@ void print_bin(ifstream& bin_file)// 3 задание
 Book get_struct(string filename, int position)// 4 задание
 {
 	Book tt;
+	tt.ISBN = 0;
 	ifstream bin_file(filename, ios::binary | ios::in);
 		if (position == -1)
 		{

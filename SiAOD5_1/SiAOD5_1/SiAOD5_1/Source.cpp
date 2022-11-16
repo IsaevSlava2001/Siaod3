@@ -85,7 +85,7 @@ int main()
 			cout << "¬ведите им€ бинарного файла" << endl;
 			cin >> bin_file;
 			ofstream outp;
-			outp.open(bin_file, ios::binary);
+			outp.open(bin_file, ios::binary || ios::app);
 			cout << "¬ведите ISBN(12 цифр) ";
 			cin >> temp.ISBN;
 			cout << "¬ведите фамилию автора(английский €зык) ";
@@ -110,7 +110,7 @@ int main()
 			cout << "¬ведите им€ бинарного файла" << endl;
 			cin >> bin_file;
 			ifstream inp;
-			inp.open(bin_file, ios::binary);
+			inp.open(bin_file, ios::binary||ios::app);
 			if (inp.good())
 			{
 				inp.close();
@@ -135,7 +135,7 @@ int main()
 			cout << "¬ведите им€ бинарного файла" << endl;
 			cin >> bin_file;
 			ofstream outp;
-			outp.open(bin_file, ios::binary);
+			outp.open(bin_file, ios::binary || ios::app);
 			cout << "¬ведите ISBN(12 цифр) ";
 			cin >> temp.ISBN;
 			cout << "¬ведите фамилию автора(английский €зык) ";
@@ -162,15 +162,16 @@ int main()
 			cout << "¬ведите им€ бинарного файла" << endl;
 			cin >> bin_file;
 			ofstream outp;
-			outp.open(bin_file, ios::binary);
+			outp.open(bin_file, ios::binary || ios::app);
 			if (outp.good())
 			{
+				outp.close();
 				cout << "¬ведите ключ(12 цифр) ";
 				cin >> key;
 				adress=node::search(root, key);
-				temp=BinFile::get_class(bin_file, adress);
-				if (temp.ISBN != 0)
+				if (adress != -1)
 				{
+					temp = BinFile::get_class(bin_file, adress);
 					cout << temp.ISBN << " " << temp.fam << "  " << temp.name;
 				}
 				else
@@ -182,7 +183,6 @@ int main()
 			{
 				cout << "такого файла не существует" << endl;
 			}
-			outp.close();
 			system("pause");
 		}
 		if (k == 8)
@@ -219,7 +219,8 @@ int main()
 			cout << "¬ведите им€ бинарного файла" << endl;
 			cin >> bin_file;
 			ifstream inp;
-			inp.open(bin_file, ios::binary);
+			i = 0;
+			inp.open(bin_file, ios::binary || ios::app);
 			if (inp.good())
 			{
 				inp.close();
@@ -244,7 +245,7 @@ int main()
 			cout << "¬ведите им€ бинарного файла" << endl;
 			cin >> bin_file;
 			ofstream outp;
-			outp.open(bin_file, ios::binary);
+			outp.open(bin_file, ios::binary || ios::app);
 			cout << "¬ведите ISBN(12 цифр) ";
 			cin >> temp.ISBN;
 			cout << "¬ведите фамилию автора(английский €зык) ";
@@ -271,15 +272,15 @@ int main()
 			cout << "¬ведите им€ бинарного файла" << endl;
 			cin >> bin_file;
 			ofstream outp;
-			outp.open(bin_file, ios::binary);
+			outp.open(bin_file, ios::binary || ios::app);
 			if (outp.good())
 			{
 				cout << "¬ведите ключ(12 цифр) ";
 				cin >> key;
 				root_splay=nodesplay::searchsplay(root_splay, key);
-				temp = BinFile::get_class(bin_file, root_splay->value);
-				if (temp.ISBN != 0)
+				if (root_splay->key==key)
 				{
+					temp = BinFile::get_class(bin_file, root_splay->value);
 					cout << temp.ISBN << " " << temp.fam << "  " << temp.name;
 				}
 				else

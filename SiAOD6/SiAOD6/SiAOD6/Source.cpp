@@ -12,6 +12,8 @@ class Graph
 	int terminal[Emax] = {0};
 	int weight[Emax] = {9999};
 	int summ[Emax][Emax] = { 0,0 };
+	int next[Emax][Emax] = { 9999,9999 };
+	int heads[Emax][Emax] = {9999,9999};
 
 public:
 	void Add(int v, int u, int w);
@@ -57,6 +59,13 @@ void Graph::print()
 }
 void Graph::Floyd()
 {
+	for (int i = 0; i < n + 1; i++)
+	{
+		for (int j = 0; j < n + 1; j++)
+		{
+			next[i][j] = heads[i][j];
+		}
+	}
 	for (int i = 0; i < n + 1;i++)
 	{
 		for (int u=0; u < n + 1; u++)
@@ -66,6 +75,7 @@ void Graph::Floyd()
 				if (summ[u][i] + summ[i][v] < summ[u][v])
 				{
 					summ[u][v] = summ[u][i] + summ[i][v];
+					next[u][v] = next[u][i];
 				}
 			}
 		}
@@ -87,6 +97,7 @@ void Graph::Help()
 		while (j > 0)
 		{
 			summ[z][terminal[j]] = weight[j];
+			heads[z][terminal[j]] = terminal[j];
 			j = next_el[j];
 		}
 		z++;
@@ -94,9 +105,18 @@ void Graph::Help()
 }
 int Graph::Printnew(int i, int j)
 {
+	int c = i;
 	if (summ[i][j] < 9999)
 	{
-		return summ[i][j];
+		cout << "Кратчайший путь между вершинами "<<i<<" и "<<j<<" составляет "<<summ[i][j]<<endl;
+		cout << "Путь лежит через вершины ";
+		while (c != j&&c!=0)
+		{
+			cout << c << " -> ";
+			c = next[c][v];
+		}
+		cout << j << endl;
+		return 1;
 	}
 	else
 	{
@@ -152,7 +172,7 @@ void main()
 			cin >> n;
 			cout << "Количество ребер >> ";
 			cin >> m;
-			cout << "В графе есть ориентированные вершины? y/n" << endl;
+			cout << "В графе есть ориентированные ребра? y/n" << endl;
 			char f;
 			cin >> f;
 			if (f == 'y' || f == 'Y')
@@ -217,10 +237,6 @@ void main()
 					if (h == 0)
 					{
 						cout << "Путь не найден" << endl;
-					}
-					else
-					{
-						cout << "Кратчайший путь между вершинами " << d << " и " << f << " составляет " << h << endl;
 					}
 				}
 				else

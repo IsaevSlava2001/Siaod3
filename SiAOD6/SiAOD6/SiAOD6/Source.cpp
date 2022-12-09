@@ -22,6 +22,8 @@ public:
 	void Help();
 	int Printnew(int i,int j);
 	void BeautPrint();
+	bool IsGraph = false;
+	bool IsFloyd = false;
 };
 
 void Graph::Add(int v, int u, int w) //добавление ребра
@@ -181,6 +183,12 @@ void main()
 				for (i = 0; i<m; i++)
 				{
 					cin >> v >> u >> w;
+					if (w < 0 || v < 0 || u < 0)
+					{
+						cout << "Отрицательные числа запрещены" << endl;
+						system("pause");
+						exit(0);
+					}
 					cout << "Ребро ориентированно? (y/n) >> ";
 					cin >> r;
 					if (r == 'y'||r=='Y')
@@ -201,48 +209,117 @@ void main()
 				for (i = 0; i<m; i++)
 				{
 					cin >> v >> u >> w;
+					if (w < 0 || v < 0 || u < 0)
+					{
+						cout << "Отрицательные числа запрещены" << endl;
+						system("pause");
+						exit(0);
+					}
 					g.Add(v, u, w);
 					g.Add(u, v, w);
 					cout << "..." << endl;
 				}
 			}
 			g.Help();
+			g.IsGraph = true;
 			system("pause");
 		}
 		else if (q == 2)
 		{
-			cout << "Вывод графа" << endl;
-			g.print();
-			system("pause");
+			if (g.IsGraph)
+			{
+				cout << "Вывод графа" << endl;
+				g.print();
+				system("pause");
+			}
+			else
+			{
+				cout << "Граф не введен" << endl;
+				system("pause");
+			}
 		}
 		else if (q == 3)
 		{
-			cout << "Поиск кратчайших путей по алгоритму Флойда" << endl;
-			g.Floyd();
-			cout << "Вывод матрицы путей" << endl;
-			g.BeautPrint();
-			system("pause");
+			if (g.IsGraph)
+			{
+				cout << "Поиск кратчайших путей по алгоритму Флойда" << endl;
+				g.Floyd();
+				cout << "Вывод матрицы путей" << endl;
+				g.BeautPrint();
+				g.IsFloyd = true;
+				system("pause");
+			}
+			else
+			{
+				cout << "Граф не введен" << endl;
+				system("pause");
+			}
 		}
 		else if (q == 4)
 		{
-			while (true)
+			if (g.IsGraph)
 			{
-				system("cls");
-				cout << "Введите 2 вершины. Если хотите выйти, введите 0 0" << endl;
-				int d, f;
-				cin >> d >> f;
-				if (d != 0 && f != 0)
+				if (!g.IsFloyd)
 				{
-					int h = g.Printnew(d, f);
-					if (h == 0)
+					cout << "Внимание!!!"<<endl<<"Алгоритм Флойда (поиск кратчайших путей) пока не был пройден."<<endl<<"Вывод кратчайшего пути будет согласно введенным весам."<<endl<<"Вы уверены, что хотите продолжить?y/n" << endl;
+					char k;
+					cin >> k;
+					if (k == 'y' || k == 'Y')
 					{
-						cout << "Путь не найден" << endl;
+						while (true)
+						{
+							system("cls");
+							cout << "Введите 2 вершины. Если хотите выйти, введите 0 0" << endl;
+							int d, f;
+							cin >> d >> f;
+							if (d != 0 && f != 0)
+							{
+								int h = g.Printnew(d, f);
+								if (h == 0)
+								{
+									cout << "Путь не найден" << endl;
+								}
+							}
+							else
+							{
+								break;
+							}
+							system("pause");
+						}
+					}
+					else
+					{
+						cout << "Вызовите пункт 3 меню, чтобы выполнить алгоритм Флойда" << endl;
+						system("pause");
 					}
 				}
 				else
 				{
-					break;
+					while (true)
+					{
+						system("cls");
+						cout << "Введите 2 вершины. Если хотите выйти, введите 0 0" << endl;
+						int d, f;
+						cin >> d >> f;
+						if (d != 0 && f != 0)
+						{
+							int h = g.Printnew(d, f);
+							if (h == 0)
+							{
+								cout << "Путь не найден" << endl;
+							}
+						}
+						else
+						{
+							break;
+						}
+						system("pause");
+					}
 				}
+			}
+			else
+			{
+				cout << "Граф не введен" << endl;
 				system("pause");
 			}
 		}

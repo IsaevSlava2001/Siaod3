@@ -1,10 +1,45 @@
 #include"BST.h"
 #include "BinFile.h"
 #include "SplayTree.h"
+#include <ctime>
 
 using namespace std;
 extern double counter;
 
+char getchar(int k)
+{
+	char let[] = { 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z' };
+	return let[k];
+}
+char word()
+{
+	char word;
+	int k = rand() % 26 + 1;
+	word = getchar(k);
+	return word;
+}
+void generate(int size)
+{
+	ofstream l;
+	l.open("bigfile.txt", ios::app);
+	Book k;
+	for (long long int i = 1; i <= size; i++)
+	{
+		k.fam[10] = '\0';
+		k.name[10] = '\0';
+		int k10 = rand() % 9+1;
+		int k11 = rand() % 10;
+		int k12 = rand() % 10;
+		k.ISBN = k10 * 100 + k11 * 10 + k12;
+		for (int i = 0; i < 10; i++)
+		{
+			k.fam[i] = word();
+			k.name[i] = word();
+		}
+		l << k.ISBN << " " << k.fam << " " << k.name << endl;
+	}
+	l.close();
+}
 int main()
 {
 	setlocale(LC_ALL, "rus");
@@ -46,12 +81,17 @@ int main()
 			cout << "Поиск с помощью линейного поиска" << endl;
 			cout << "Введите имя бинарного файла" << endl;
 			cin >> bin_file;
+
 			cout << "Введите ключ (12 цифр)" << endl;
 			cin >> key;
+			unsigned int start_time = clock();
 			temp=BinFile::linear_search(bin_file, key);
+			unsigned int finish_time = clock();
 			if (temp.ISBN != 0)
 			{
 				cout << temp.ISBN << " " << temp.fam << "  " << temp.name;
+				unsigned int rez_time = finish_time - start_time;
+				cout << "Поиск проведен за " <<rez_time <<" милисекунд"<< endl;
 			}
 			else
 			{
@@ -110,7 +150,7 @@ int main()
 			cout << "Введите имя бинарного файла" << endl;
 			cin >> bin_file;
 			ifstream inp;
-			inp.open(bin_file, ios::binary||ios::app);
+			inp.open(bin_file, ios::binary);
 			if (inp.good())
 			{
 				inp.close();
@@ -168,11 +208,15 @@ int main()
 				outp.close();
 				cout << "Введите ключ(12 цифр) ";
 				cin >> key;
+				unsigned int start_time = clock();
 				adress=node::search(root, key);
 				if (adress != -1)
 				{
 					temp = BinFile::get_class(bin_file, adress);
+					unsigned finish_time = clock();
+					unsigned rez_time = finish_time - start_time;
 					cout << temp.ISBN << " " << temp.fam << "  " << temp.name;
+					cout << "Поиск проведен за " << rez_time<< " милисекунд" << endl;
 				}
 				else
 				{
@@ -277,11 +321,15 @@ int main()
 			{
 				cout << "Введите ключ(12 цифр) ";
 				cin >> key;
+				unsigned int start_time = clock();
 				root_splay=nodesplay::searchsplay(root_splay, key);
 				if (root_splay->key==key)
 				{
 					temp = BinFile::get_class(bin_file, root_splay->value);
+					unsigned int finish_time = clock();
+					unsigned rez_time = finish_time - start_time;
 					cout << temp.ISBN << " " << temp.fam << "  " << temp.name;
+					cout << "Поиск проведен за " << rez_time<< " милисекунд" << endl;
 				}
 				else
 				{
@@ -323,7 +371,16 @@ int main()
 			nodesplay::printsplayBT("", root_splay, false, 0);
 			system("pause");
 		}
-		if (k < 1 || k>14)
+		if (k == 15)
+		{
+				ofstream l;
+				l.open("bigfile.txt");
+				l << "";
+				l.close();
+				generate(1000);
+				system("pause");
+		}
+		if (k < 1 || k>15)
 		{
 			cout << "Вы уверены, что хотите выйти? Y/N" << endl;
 			char j;

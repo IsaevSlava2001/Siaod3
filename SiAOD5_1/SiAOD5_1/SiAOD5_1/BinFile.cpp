@@ -3,7 +3,7 @@
 int BinFile::txt_to_bin(string txt_file, string bin_file)
 {
 	ifstream inp;
-	inp.open(txt_file, ios::binary || ios::app);
+	inp.open(txt_file,ios::in);
 	ofstream outp;
 	outp.open(bin_file, ios::binary || ios::app);
 	if (inp.good() && outp.good())
@@ -49,17 +49,23 @@ void BinFile::AddToBin(ofstream& bin_file, Book book)
 Book BinFile::linear_search(string bin_file, long long int key)
 {
 	ifstream inp;
-	inp.open(bin_file, ios::binary || ios::app);
+	inp.open(bin_file, ios::binary );
 	Book tt;
-	tt.ISBN = 0;
+	Book m;
+	m.ISBN = 0;
 	while (true)
 	{
-		inp.read((char*)&tt, sizeof(tt));
+		inp.read((char*)&tt, sizeof(Book));
 		if (!inp.eof())
 		{
 			if (tt.ISBN == key)
 			{
-				return tt;
+				m.ISBN = tt.ISBN;
+				for (int i = 0; i < 50; i++)
+				{
+					m.fam[i] = tt.fam[i];
+					m.name[i] = tt.name[i];
+				}
 			}
 		}
 		else
@@ -68,18 +74,18 @@ Book BinFile::linear_search(string bin_file, long long int key)
 		}
 	}
 	inp.close();
-	return tt;
+	return m;
 }
 long long int* BinFile::getISBN(string txt_file)
 {
 	ifstream inp;
-	inp.open(txt_file, ios::binary|| ios::app);
+	inp.open(txt_file, ios::binary);
 	Book tt;
 	long long int ISBN[10000] = {0};
 	int i = 0;
 	while (true)
 	{
-		inp.read((char*)&tt, sizeof(tt));
+		inp.read((char*)&tt, sizeof(Book));
 		if (!inp.eof())
 		{
 			ISBN[i] = tt.ISBN;

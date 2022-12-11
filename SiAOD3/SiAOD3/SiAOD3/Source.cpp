@@ -1,5 +1,6 @@
 #include "HashBin.h"
 #include "HashTable.h"
+#include <ctime>
 
 
 void menubin()
@@ -114,7 +115,7 @@ void menubin()
 			if (pos_num < c)
 			{
 				Book tt = get_struct(inp_file, pos_num);
-				cout << tt.ISBN << ' ' << tt.fam << ' ' << tt.name << ' ' << tt.year << '\n';
+				cout << tt.ISBN << ' ' << tt.fam << ' ' << tt.name  << '\n';
 				system("pause");
 				menubin();
 			}
@@ -169,6 +170,40 @@ void menubin()
 		}
 		break;
 	}
+}
+char getchar(int k)
+{
+	char let []= {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+	return let[k];
+}
+char word()
+{
+	char word;
+	int k=rand()%26+1;
+	word = getchar(k);
+	return word;
+}
+void generate(int size)
+{
+	ofstream l;
+	l.open("bigfile.txt", ios::app);
+	Book k;
+	char z[15];
+	for (long long int i = 1; i <= size; i++)
+	{
+		k.fam[17] = '\0';
+		k.name[17] = '\0';
+		k.ISBN = (rand() % 9 + 1 * 100000000000) + (rand() % 10 * 10000000000) + (rand() % 10 * 1000000000) + (rand() % 10 * 100000000) + (rand() % 10 * 10000000)+(rand() % 10 * 1000000) + (rand() % 10 * 100000) + (rand() % 10 * 10000) + (rand() % 10 * 1000) + (rand() % 10 * 100) + (rand() % 10 * 10) + (rand() % 10);
+		for (int i = 0; i < 16; i++)
+		{
+			k.fam[i] = word();
+			k.name[i] = word();
+		}
+		//k.year = (rand()%9+1*1000)+(rand()%10*100)+(rand()%10*10)+(rand()%10);
+		l << k.ISBN << " " << k.fam << " " << k.name  << endl;
+		//cout << k.ISBN << " " << k.fam << " " << k.name << " " << k.year << endl;
+	}
+	l.close();
 }
 
 
@@ -283,9 +318,12 @@ int main()
 			inp.open(inp_file, ios::binary);
 			if (inp.good())
 			{
+				unsigned int start_time = clock();
 				if (ReadBin(Tb, inp) == 0)
 				{
-					cout << "Успешно" << endl;
+					unsigned int finish_time = clock();
+					unsigned int rez_time = finish_time - start_time;
+					cout << "Успешно. Время хеширвоания - "<<rez_time<<" милисекунд" << endl;
 					system("pause");
 					inp.close();
 					break;
@@ -315,10 +353,14 @@ int main()
 			{
 				cout << "Введите ключ. Обязательно число" << endl;
 				cin >> h1;
+				unsigned int start_time = clock();
 				i = search(Tb, h1);
 				if (i != -1)
 				{
 					find(i, inp);
+					unsigned int finish_time = clock();
+					unsigned int search_time = finish_time - start_time;
+					cout << "Время поиска ключа " << search_time<<" милисекунд"<< endl;
 					system("pause");
 					break;
 				}
@@ -391,8 +433,6 @@ int main()
 				cout << "Введите название книги(английский язык)" << endl;
 				cin >> temp1;
 				strcpy(temp.name, temp1.c_str());
-				cout << "Введите год издания" << endl;
-				cin >> temp.year;
 				AddToBin(outp, temp, Tb);
 				outp.close();
 				inp.open(outp_file, ios::binary);
@@ -430,6 +470,16 @@ int main()
 				cout << "Файла с таким именем не существует. ";
 				system("pause");
 			}
+		}
+		break;
+		case 14:
+		{
+			ofstream l;
+			l.open("bigfile.txt");
+			l << "";
+			l.close();
+			generate(1000);
+			system("pause");
 		}
 		break;
 		default:

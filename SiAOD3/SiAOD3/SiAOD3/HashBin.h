@@ -9,6 +9,7 @@ struct Book
 	long long int ISBN;
 	char fam[50];
 	char name[50];
+	int year;
 };
 struct TypeItembin
 {
@@ -146,7 +147,7 @@ void find(int i, ifstream& file)
 	Book book;
 	file.seekg(i*sizeof(Book),ios::beg);
 	file.read((char*)&book, sizeof(book));
-	cout << book.ISBN << ' ' << book.fam << ' ' << book.name  << '\n';
+	cout << book.ISBN << ' ' << book.fam << ' ' << book.name <<' '<<book.year << '\n';
 }
 int deleteFromHashTable(HashTablebin& t, long long int key)
 {
@@ -216,7 +217,7 @@ void txt_to_bin(ifstream& txt_file, ofstream& bin_file)
 		txt_file >> book.ISBN;
 		if (!txt_file.eof())
 		{
-			txt_file >> book.fam >> book.name;
+			txt_file >> book.fam >> book.name>>book.year;
 			bin_file.write((char*)&book, sizeof(Book));
 		}
 		else break;
@@ -238,7 +239,7 @@ void bin_to_txt(ifstream& bin_file, ofstream& txt_file)
 		bin_file.read((char*)&book, sizeof(book));
 		if (!bin_file.eof())
 		{
-			txt_file << book.ISBN << " " << book.fam << " " << book.name  << " ";
+			txt_file << book.ISBN << " " << book.fam << " " << book.name  << " "<<book.year<<" ";
 		}
 		else
 		{
@@ -255,7 +256,7 @@ void print_bin(ifstream& bin_file)
 		bin_file.read((char*)&book, sizeof(book));
 		if (!bin_file.eof())
 		{
-			cout << book.ISBN << ' ' << book.fam << ' ' << book.name  << '\n';
+			cout << book.ISBN << ' ' << book.fam << ' ' << book.name  <<' '<<book.year<< '\n';
 		}
 		else break;
 	}
@@ -293,7 +294,7 @@ void remove_struct(string bin_name, long long key)
 		{
 			if (book.ISBN != key)
 			{
-				tmp << book.ISBN << " " << book.fam << " " << book.name << "\n";
+				tmp << book.ISBN << " " << book.fam << " " << book.name <<" "<<book.year<< "\n";
 			}
 			else
 			{
